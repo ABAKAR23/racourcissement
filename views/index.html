@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raccourcisseur d'URL</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔗 Raccourcisseur d'URL</h1>
+            <p class="subtitle">Transformez vos longues URLs en liens courts et partageables</p>
+        </header>
+
+        <main>
+            <!-- Section de création d'URL courte -->
+            <section class="shorten-section">
+                <h2>Raccourcir une URL</h2>
+                <form id="shortenForm" class="url-form">
+                    <div class="input-group">
+                        <input 
+                            type="url" 
+                            id="urlInput" 
+                            name="url" 
+                            placeholder="https://www.example.com/une-tres-longue-url" 
+                            required
+                            class="url-input"
+                        >
+                        <button type="submit" class="submit-btn">
+                            ✂️ Raccourcir
+                        </button>
+                    </div>
+                    <p class="hint">💡 L'URL doit commencer par http:// ou https://</p>
+                </form>
+
+                <!-- Résultat -->
+                <div id="result" class="result hidden">
+                    <div class="result-success">
+                        <h3>✅ URL raccourcie avec succès !</h3>
+                        <div class="url-display">
+                            <label>URL originale :</label>
+                            <div class="url-box original-url" id="originalUrl"></div>
+                        </div>
+                        <div class="url-display">
+                            <label>URL courte :</label>
+                            <div class="url-box short-url" id="shortUrl"></div>
+                            <button class="copy-btn" id="copyBtn">📋 Copier</button>
+                        </div>
+                        <div class="short-id">
+                            <label>ID court :</label>
+                            <span id="shortId" class="badge"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Erreur -->
+                <div id="error" class="result error-result hidden">
+                    <div class="result-error">
+                        <h3>❌ Erreur</h3>
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section d'information -->
+            <section class="info-section">
+                <h2>Comment ça marche ?</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Entrez votre URL</h3>
+                        <p>Collez l'URL complète que vous souhaitez raccourcir</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Obtenez un lien court</h3>
+                        <p>Notre système génère un identifiant unique</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Partagez facilement</h3>
+                        <p>Utilisez le lien court partout où vous voulez</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section API -->
+            <section class="api-section">
+                <h2>Documentation API</h2>
+                
+                <div class="api-endpoint">
+                    <h3>POST /api/shorturl</h3>
+                    <p>Créer une URL courte</p>
+                    <div class="code-block">
+                        <pre><code>// Requête
+POST /api/shorturl
+Content-Type: application/x-www-form-urlencoded
+
+url=https://www.example.com
+
+// Réponse (succès)
+{
+  "original_url": "https://www.example.com",
+  "short_url": 1
+}
+
+// Réponse (erreur)
+{
+  "error": "invalid url"
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h3>GET /api/shorturl/:short_url</h3>
+                    <p>Rediriger vers l'URL originale</p>
+                    <div class="code-block">
+                        <pre><code>// Exemple
+GET /api/shorturl/1
+
+// Résultat : Redirection 302 vers l'URL originale</code></pre>
+                    </div>
+                </div>
+
+                <div class="api-endpoint">
+                    <h3>GET /api/urls</h3>
+                    <p>Voir toutes les URLs enregistrées (debug)</p>
+                    <div class="code-block">
+                        <pre><code>// Réponse
+{
+  "count": 3,
+  "urls": [
+    {
+      "original_url": "https://www.example.com",
+      "short_url": 1
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section de test -->
+            <section class="test-section">
+                <h2>Tester une URL courte</h2>
+                <div class="test-form">
+                    <input 
+                        type="number" 
+                        id="testId" 
+                        placeholder="Entrez un ID (ex: 1)" 
+                        class="test-input"
+                    >
+                    <button id="testBtn" class="test-btn">
+                        🔍 Tester
+                    </button>
+                </div>
+                <p class="test-hint">Cela ouvrira l'URL originale dans un nouvel onglet</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>🎯 Créé pour le défi freeCodeCamp - APIs and Microservices</p>
+        </footer>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
