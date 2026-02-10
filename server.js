@@ -40,25 +40,32 @@ function isValidUrl(urlString) {
 // POST endpoint pour créer une URL courte
 app.post('/api/shorturl', (req, res) => {
   const originalUrl = req.body.url;
+  
+  console.log('Nouvelle URL reçue:', originalUrl);
 
   // Validation de base de l'URL
   const parsedUrl = isValidUrl(originalUrl);
   
   if (!parsedUrl) {
+    console.log('URL invalide (format)');
     return res.json({ error: 'invalid url' });
   }
 
   // Vérification DNS pour s'assurer que le domaine existe
   dns.lookup(parsedUrl.hostname, (err, address) => {
     if (err) {
+      console.log('URL invalide (DNS):', err.message);
       return res.json({ error: 'invalid url' });
     }
+
+    console.log('DNS validé:', parsedUrl.hostname, '->', address);
 
     // Vérifier si l'URL existe déjà dans la base de données
     const existingUrl = urlDatabase.find(item => item.original_url === originalUrl);
     
     if (existingUrl) {
       // L'URL existe déjà, retourner l'ID existant
+      console.log('URL existante trouvée:', existingUrl);
       return res.json({
         original_url: existingUrl.original_url,
         short_url: existingUrl.short_url
@@ -72,6 +79,8 @@ app.post('/api/shorturl', (req, res) => {
     };
 
     urlDatabase.push(newUrl);
+    console.log('Nouvelle URL créée:', newUrl);
+    console.log('Base de données:', urlDatabase);
     currentId++;
 
     res.json({
@@ -84,9 +93,14 @@ app.post('/api/shorturl', (req, res) => {
 // GET endpoint pour rediriger vers l'URL originale
 app.get('/api/shorturl/:short_url', (req, res) => {
   const shortUrl = parseInt(req.params.short_url);
+  
+  console.log('Redirection demandée pour:', req.params.short_url);
+  console.log('Converti en nombre:', shortUrl);
+  console.log('Base de données actuelle:', urlDatabase);
 
   // Vérifier si c'est un nombre valide
   if (isNaN(shortUrl)) {
+    console.log('Erreur: format invalide');
     return res.json({ error: 'Wrong format' });
   }
 
@@ -94,11 +108,13 @@ app.get('/api/shorturl/:short_url', (req, res) => {
   const urlEntry = urlDatabase.find(item => item.short_url === shortUrl);
 
   if (!urlEntry) {
+    console.log('Erreur: URL non trouvée');
     return res.json({ error: 'No short URL found for the given input' });
   }
 
-  // Rediriger vers l'URL originale
-  res.redirect(urlEntry.original_url);
+  console.log('Redirection vers:', urlEntry.original_url);
+  // Rediriger vers l'URL originale avec code 302
+  return res.redirect(302, urlEntry.original_url);
 });
 
 // Route pour afficher toutes les URLs (utile pour le débogage)
